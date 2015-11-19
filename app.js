@@ -2,6 +2,40 @@
 // an API for secure and simple data usage
 
 (function(){
+    var utility = {
+        checkField: function(field){
+            for(var i = 0; i < field.options.length; i++){
+                if(field.options[i].selected){
+                    return field.options[i].value;
+                    break;
+                }
+            }
+        },
+        capitalize: function(word){
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        },
+        checkForClass: function(elem, cl){
+            for(var i = 0; i < elem.classList.length; i++){
+                if(elem.classList[i] == cl) {
+                    return true;
+                    break;
+                }
+            }
+        },
+        randomArrayElement: function(list){
+            var num = Math.floor(Math.random() * list.length);
+            var name = list[num];
+
+            return name;
+        },
+        killKids: function(el){
+            while(el.hasChildNodes()){
+                list.removeChild(list.firstChild);
+            }
+        }
+    };
+
+
     var name = {
         names: {
             fhm: 'james cole tyler quinn',
@@ -10,50 +44,81 @@
             lhf: 'sheehan farrow'
         },
         init: function(){
-            this.cacheDom();
             this.names.fhm = this.names.fhm.split(' ');
             this.names.lhm = this.names.lhm.split(' ');
             this.names.fhf = this.names.fhf.split(' ');
             this.names.lhf = this.names.lhf.split(' ');
+            this.cacheDom();
+            this.generateNames();
+            this.bindEvents();
+            this.render();
             console.log('new name instance initialized.')
         },
         cacheDom: function(){
         // all the DOM elements I will need to use the app
             this.nameOne = document.getElementById('char-name').childNodes[0];
             this.nameTwo = document.getElementById('char-name').childNodes[1];
-            this.roll = document.getElementById('roll')
+            this.roll = document.getElementById('roll');
             this.list = document.querySelector(".past-names");
+            this.gender = document.customize.gender;
+            this.race = document.customize.race;
         },
-        utility: {
-        // various general purpose functions I will use later on
-            checkField: function(field){
-                for(var i = 0; i < field.options.length; i++){
-                    if(field.options[i].selected){
-                        return field.options[i].value;
-                        break;
-                    }
-                }
-            },
-            capitalize: function(word){
-                return word.charAt(0).toUpperCase() + word.slice(1);
-            },
-            checkForClass: function(elem, cl){
-                for(var i = 0; i < elem.classList.length; i++){
-                    if(elem.classList[i] == cl) {
-                        return true;
-                        break;
-                    }
-                }
-            },
-            randomArrayElement: function(list){
-                var num = Math.floor(Math.random() * list.length);
-                var name = list[num];
-
-                return name;
+        bindEvents: function(){
+            this.roll.onclick = this.generateNames.bind(this);
+            this.nameOne.onclick = this.lockName;
+            this.nameTwo.onclick = this.lockName;
+        },
+        spinDie: function(){
+            var deg;
+            this.roll.style.webkitTransform === 'rotate(720deg)' ? deg = 0 : deg = 720;
+            this.roll.style.webkitTransform = 'rotate(' + deg + 'deg)';
+            this.roll.style.mozTransform    = 'rotate(' + deg + 'deg)';
+            this.roll.style.msTransform     = 'rotate(' + deg + 'deg)';
+            this.roll.style.oTransform      = 'rotate(' + deg + 'deg)';
+            this.roll.style.transform       = 'rotate(' + deg + 'deg)';
+        },
+        lockName: function(){
+            if (!utility.checkForClass(this, 'locked')){
+                this.style.opacity = .5;
+                this.classList.add('locked');
+            } else {
+                this.classList.remove('locked');
+                this.style.opacity = 1;
             }
+        },
+        generateNames: function(){
+            var firstNameList, lastNameList;
+            switch (utility.checkField(this.gender)) {
+                case 'male':
+                    firstNameList = this.names.fhm;
+                    lastNameList = this.names.lhm;
+                    break;
+                case 'female':
+                    firstNameList = this.names.fhf;
+                    lastNameList = this.names.lhf;
+                    break;
+                case 'either':
+                    firstNameList = this.names.fhm.concat(this.names.fhf);
+                    lastNameList = this.names.lhm.concat(this.names.lhf);
+                default:
+                    break;
+                }
+            this.firstName = utility.randomArrayElement(firstNameList);
+            this.lastName = utility.randomArrayElement(lastNameList);
+            this.render();
+        },
+        render: function(){
+            if(!utility.checkForClass(this.nameOne, 'locked')){
+                this.nameOne.innerText = utility.capitalize(this.firstName + ' ');
+            };
+
+            if(!utility.checkForClass(this.nameTwo, 'locked')){
+                this.nameTwo.innerText = utility.capitalize(this.lastName);
+            };
+            this.spinDie();
         }
     }
-
+    
     name.init();
 })()
 
@@ -72,11 +137,6 @@
     //
     // var list = document.querySelector(".past-names");
     //
-    // var killKids = function(el){
-    //     while(el.hasChildNodes()){
-    //         list.removeChild(list.firstChild);
-    //     }
-    // }
     //
     // // more specific functions
     // //Adds the previous name to the ul stack of names
