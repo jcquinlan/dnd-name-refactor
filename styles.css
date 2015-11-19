@@ -1,0 +1,66 @@
+body {
+    color: #4D4D4D;
+}
+
+.first, .second {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#logo {
+    margin: 0;
+    line-height: 65px;
+    font-family: "Cinzel";
+}
+
+#roll {
+    position: relative;
+    width: 80px;
+    cursor: pointer;
+    margin: 0 auto;
+    margin-top: 60px;
+    -webkit-transition: all 0.4s ease-in-out;
+    -moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+#char-name {
+    margin-top: 60px;
+    font-family: "Cinzel";
+    font-size: 100px;
+}
+
+.button {
+    color: white;
+    background-color: #D00000;
+    display: inline-block;
+}
+
+.soft {
+    opacity: .5;
+}
+
+.nav-wrapper {
+    background-color: #D00000;
+}
+[name="customize"] {
+    margin-top: 30px;
+}
+
+select {
+    background-color: #f2f2f2;
+    margin-bottom: 15px;
+}
+
+.past-names {
+    display: block;
+}
+
+.past-names li {
+    display: inline-block;
+    margin-right: 30px;
+}
