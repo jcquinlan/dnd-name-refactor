@@ -36,16 +36,27 @@
 
     var name = {
         names: {
-            fhm: 'james cole tyler quinn',
-            lhm: 'quinlan bush kofron kender',
-            fhf: 'ally clare',
-            lhf: 'sheehan farrow'
+            human: {
+                m: 'Anlow, Arando, Bram, Cale, Dalkon, Daylen, Dodd, Dungarth, Dyrk, Eandro, Falken, Feck, Fenton, Gryphero, Hagar, Jeras, Krynt, Lavant, Leyten, Madian, Malfier, Markus, Meklan, Namen, Navaren, Nerle, Nilus, Ningyan, Norris, Quentin, Semil, Sevenson, Steveren, Talfen, Tamond, Taran, Tavon, Tegan, Vanan, Vincent',
+                f: 'Arkalis, Armanci, Bilger, Blackstrand, Brightwater, Carnavon, Caskajaro, Coldshore, Coyle, Cresthill, Cuttlescar, Daargen, Dalicarlia, Danamark, Donoghan, Drumwind, Dunhall, Ereghast, Falck, Fallenbridge, Faringray, Fletcher, Fryft, Goldrudder, Grantham, Graylock, Gullscream, Hindergrass, Iscalon, Kreel, Kroft, Lamoth, Leerstrom, Lynchfield, Moonridge, Netheridge, Oakenheart, Pyncion, Ratley, Redraven, Revenmar, Roxley, Sell, Seratolva, Shanks, Shattermast, Shaulfer, Silvergraft, Stavenger, Stormchapel, Strong, Swiller, Talandro , Targana, Towerfall, Umbermoor, Van Devries, Van Gandt, Van Hyden, Varcona, Varzand, Voortham, Vrye, Webb, Welfer, Wilxes, Wintermere, Wygarthe, Zatchet, Zethergyll',
+                l: 'Azura, Brey, Hallan, Kasaki, Lorelei, Mirabel, Pharana, Remora, Rosalyn, Sachil, Saidi, Tanika, Tura, Tylsa, Vencia, Xandrilla',
+            },
+            elf: {
+                m: 'Alarcion, Alathar, Ariandar, Arromar, Borel, Bvachan, Carydion, Elgoth, Farlien, Ferel, Gaerlan, Iafalior, Kaelthorn, Laethan, Leliar, Leodor, Lorak, Lorifir, Morian, Oleran, Rylef, Savian, Seylas, Tevior, Veyas',
+                f: 'Aryllan, Atalya, Ayrthwil, Irva, Lyfalia, Ronefel, Thirya, Velene, Venefiq, Zereni',
+                l: 'Autumnloft, Balefrost, Briarfell, Evenwind, Graytrails, Mooncairn, Riverwall, Stormwolf, Summergale, Sunshadow, Woodenhawk'
+            },
+            dwarf: {},
+            gnome: {},
+            tielfing: {}
         },
         init: function(){
-            this.names.fhm = this.names.fhm.split(' ');
-            this.names.lhm = this.names.lhm.split(' ');
-            this.names.fhf = this.names.fhf.split(' ');
-            this.names.lhf = this.names.lhf.split(' ');
+            this.names.human.m = this.names.human.m.split(', ');
+            this.names.human.f = this.names.human.f.split(', ');
+            this.names.human.l = this.names.human.l.split(', ');
+            this.names.elf.m = this.names.elf.m.split(', ');
+            this.names.elf.f = this.names.elf.f.split(', ');
+            this.names.elf.l = this.names.elf.l.split(', ');
             this.pastNames = [];
             this.cacheDom();
             this.bindEvents();
@@ -85,18 +96,19 @@
         },
         generateNames: function(){
             var firstNameList, lastNameList;
+
             switch (utility.checkField(this.gender)) {
                 case 'male':
-                    firstNameList = this.names.fhm;
-                    lastNameList = this.names.lhm;
+                    firstNameList = this.names[utility.checkField(this.race)].m;
+                    lastNameList = this.names[utility.checkField(this.race)].l;
                     break;
                 case 'female':
-                    firstNameList = this.names.fhf;
-                    lastNameList = this.names.lhf;
+                    firstNameList = this.names[utility.checkField(this.race)].f;
+                    lastNameList = this.names[utility.checkField(this.race)].l;
                     break;
                 case 'either':
-                    firstNameList = this.names.fhm.concat(this.names.fhf);
-                    lastNameList = this.names.lhm.concat(this.names.lhf);
+                    firstNameList = this.names[utility.checkField(this.race)].m.concat(this.names[utility.checkField(this.race)].f);
+                    lastNameList = this.names[utility.checkField(this.race)].l;
                 default:
                     break;
                 }
@@ -111,7 +123,7 @@
                     this.pastNames.shift();
                 }
 
-                this.pastNames.push(utility.capitalize(this.firstName) + ' ' + utility.capitalize(this.lastName));
+                this.pastNames.push(utility.capitalize(this.nameOne.innerText) + ' ' + utility.capitalize(this.nameTwo.innerText));
                 for(var i = 0; i < this.pastNames.length; i++){
                     var oldNameLi = document.createElement("li");
                     var oldName = document.createTextNode(this.pastNames[(this.pastNames.length - i) - 1]);
@@ -121,17 +133,21 @@
             }
         },
         render: function(){
-            this.spinDie();
-            this.fillPastNames();
-            this.generateNames();
+            if(utility.checkForClass(this.nameOne, 'locked') && utility.checkForClass(this.nameTwo, 'locked')){
+                alert('You cannot generate a new name with both names locked.');
+            } else {
+                this.spinDie();
+                this.fillPastNames();
+                this.generateNames();
 
-            if(!utility.checkForClass(this.nameOne, 'locked')){
-                this.nameOne.innerText = utility.capitalize(this.firstName + ' ');
-            };
+                if(!utility.checkForClass(this.nameOne, 'locked')){
+                    this.nameOne.innerText = utility.capitalize(this.firstName + ' ');
+                };
 
-            if(!utility.checkForClass(this.nameTwo, 'locked')){
-                this.nameTwo.innerText = utility.capitalize(this.lastName);
-            };
+                if(!utility.checkForClass(this.nameTwo, 'locked')){
+                    this.nameTwo.innerText = utility.capitalize(this.lastName);
+                };
+            }
         }
     }
 
