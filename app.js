@@ -1,6 +1,4 @@
-// This is a refactoring of my name generator app using object literal architecture with
-// an API for secure and simple data usage
-
+// This is a refactoring of my name generator app using object literal architecture
 (function(){
     var utility = {
         checkField: function(field){
@@ -30,7 +28,7 @@
         },
         killKids: function(el){
             while(el.hasChildNodes()){
-                list.removeChild(list.firstChild);
+                el.removeChild(el.firstChild);
             }
         }
     };
@@ -48,10 +46,9 @@
             this.names.lhm = this.names.lhm.split(' ');
             this.names.fhf = this.names.fhf.split(' ');
             this.names.lhf = this.names.lhf.split(' ');
+            this.pastNames = [];
             this.cacheDom();
-            this.generateNames();
             this.bindEvents();
-            this.render();
             console.log('new name instance initialized.')
         },
         cacheDom: function(){
@@ -64,7 +61,7 @@
             this.race = document.customize.race;
         },
         bindEvents: function(){
-            this.roll.onclick = this.generateNames.bind(this);
+            this.roll.onclick = this.render.bind(this);
             this.nameOne.onclick = this.lockName;
             this.nameTwo.onclick = this.lockName;
         },
@@ -105,9 +102,29 @@
                 }
             this.firstName = utility.randomArrayElement(firstNameList);
             this.lastName = utility.randomArrayElement(lastNameList);
-            this.render();
+        },
+        fillPastNames: function(){
+            console.log(this.pastNames);
+            utility.killKids(this.list);
+            if(this.firstName != undefined && this.lastName != undefined){
+                if(this.pastNames.length >= 5){
+                    this.pastNames.shift();
+                }
+
+                this.pastNames.push(utility.capitalize(this.firstName) + ' ' + utility.capitalize(this.lastName));
+                for(var i = 0; i < this.pastNames.length; i++){
+                    var oldNameLi = document.createElement("li");
+                    var oldName = document.createTextNode(this.pastNames[(this.pastNames.length - i) - 1]);
+                    oldNameLi.appendChild(oldName);
+                    this.list.appendChild(oldNameLi);
+                }
+            }
         },
         render: function(){
+            this.spinDie();
+            this.fillPastNames();
+            this.generateNames();
+
             if(!utility.checkForClass(this.nameOne, 'locked')){
                 this.nameOne.innerText = utility.capitalize(this.firstName + ' ');
             };
@@ -115,10 +132,9 @@
             if(!utility.checkForClass(this.nameTwo, 'locked')){
                 this.nameTwo.innerText = utility.capitalize(this.lastName);
             };
-            this.spinDie();
         }
     }
-    
+
     name.init();
 })()
 
