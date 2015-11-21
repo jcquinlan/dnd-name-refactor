@@ -126,6 +126,7 @@
                 this.pastNames.push(utility.capitalize(this.nameOne.innerText) + ' ' + utility.capitalize(this.nameTwo.innerText));
                 for(var i = 0; i < this.pastNames.length; i++){
                     var oldNameLi = document.createElement("li");
+                    oldNameLi.style.opacity = (5-i)/5;
                     var oldName = document.createTextNode(this.pastNames[(this.pastNames.length - i) - 1]);
                     oldNameLi.appendChild(oldName);
                     this.list.appendChild(oldNameLi);
